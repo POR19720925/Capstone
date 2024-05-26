@@ -1,0 +1,43 @@
+sudo MySQL -u root
+
+create database inversiones;
+
+
+create table productos ( idprod int, nombre varchar (255), valor float, precio float );
+create unique index ix_productos on productos(idprod);
+insert into productos values(1, 'Cetes 30 Dias Gobierno', 2.5, 3.2);
+insert into productos values(2, 'Cetes 60 Dias Gobierno', 5.5, 7.2);
+insert into productos values(3, 'Bondes 90 Dias', 25.5, 37.2);
+insert into productos values(4, 'Fideim Largo Plazp', 40, 47.2);
+
+create table cliente (idcte int, nombre varchar(100), apellido_pat varchar(100), apellido_mat varchar(100),fondeo_actual float);
+create unique index ix_cliente on cliente(idcte);
+insert into cliente values(1, 'Ashley', 'Ruiz','', 1500);
+insert into cliente values(2, 'Christian', 'Avalos','', 11500);
+insert into cliente values(3, 'Porfirio', 'Rodriguez','', 150000);
+
+
+
+create table portafolio (idprod int, idcte int, titulos int, fecha_alta datetime);
+create unique index ix_portafolio on portafolio(idprod,idcte);
+insert into portafolio values (1,1,100, CURRENT_DATE);
+insert into portafolio values (2,1,10, CURRENT_DATE);
+insert into portafolio values (3,1,20, CURRENT_DATE);
+insert into portafolio values (4,1,14, CURRENT_DATE);
+
+insert into portafolio values (1,2,90, CURRENT_DATE);
+insert into portafolio values (2,2,14, CURRENT_DATE);
+insert into portafolio values (3,2,89, CURRENT_DATE);
+insert into portafolio values (4,2,20, CURRENT_DATE);
+
+insert into portafolio values (1,3,10, CURRENT_DATE);
+insert into portafolio values (2,3,15, CURRENT_DATE);
+insert into portafolio values (3,3,200, CURRENT_DATE);
+insert into portafolio values (4,3,18, CURRENT_DATE);
+
+
+Select cliente.nombre, apellido_pat, productos.nombre as producto, portafolio.titulos, productos.precio, FLOOR(portafolio.titulos*productos.precio) as Valor from productos,cliente, portafolio where productos.idprod=portafolio.idprod and cliente.idcte=portafolio.idcte;
+
+
+Select cliente.nombre, apellido_pat,sum(FLOOR(portafolio.titulos*productos.precio)) as Posicion from productos,cliente, portafolio where productos.idprod=portafolio.idprod and cliente.idcte=portafolio.idcte
+group by cliente.nombre, apellido_pat;
